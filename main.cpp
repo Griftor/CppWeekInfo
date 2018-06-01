@@ -7,21 +7,6 @@
 #include <algorithm>
 using namespace std;
 
-// A subset of TradeDate, containing info from each Session (there are several per day)
-struct Session {
-    string utc_timestamp = ""; //341
-    int trading_session_id = 0;  //336
-    // Enumeration of 336 - 21: Pre-Open; 17: Ready to trade; 2: Trading halt(Pause);
-    // 18: Not available for trading; 4: Close; 26: Post Close;
-    int trading_session_interrupt = 0;  // [625] (only available when trading_session_id = 21)
-};
-
-// A subset of Product, containing information from each day from the week schedule
-struct TradeDate {
-    vector<Session> sessions;
-    string trade_date_string = ""; // YYYYMMDD 75
-    int no_trading_sessions = 0; // 386
-};
 
 // A data type that holds two things - a session and when it happens. Like a session, but less
 struct SessionPair {
@@ -31,12 +16,9 @@ struct SessionPair {
 
 // The fundamental container of the Project - Holds information from the file
 struct Product {
-    vector<TradeDate> trade_dates;
     vector<SessionPair> session_pairs;
     string product_complex = "";  //1227
     string security_group = "";  // 1151
-    int market_segment_id = 0;  //1300
-    int no_dates = 0;  // 580
 };
 
 struct WeekdayWithString {
@@ -127,59 +109,42 @@ map<string, Product> MakeProductMap(string file_name) {
         string my_line;
 
         while(getline(my_file, my_line)){
-            // Delete the first chunk 35
             Product my_product;
+            my_line = DelUpToNextItem(my_line); // Chew Off the Chunk 35
+            my_line = DelUpToNextItem(my_line); // Chew Off the Market Segment ID
+            my_product.product_complex = GetNextChunk(my_line); // Need this one
             my_line = DelUpToNextItem(my_line);
-            my_product.market_segment_id = stoi(GetNextChunk(my_line));
+            my_product.security_group = GetNextChunk(my_line); // Need this one too
             my_line = DelUpToNextItem(my_line);
-            my_product.product_complex = GetNextChunk(my_line);
+            int no_dates = stoi(GetNextChunk(my_line)); // Need this, but not for long
             my_line = DelUpToNextItem(my_line);
-            my_product.security_group = GetNextChunk(my_line);
-            my_line = DelUpToNextItem(my_line);
-            my_product.no_dates = stoi(GetNextChunk(my_line));
-            my_line = DelUpToNextItem(my_line);
-            vector<TradeDate> dates;
             int i = 0;
 
-            while(i < my_product.no_dates){
-                TradeDate this_date;
-                this_date.trade_date_string = GetNextChunk(my_line);
+            while(i < no_dates){
+                my_line = DelUpToNextItem(my_line); // Chew off TradeDateString
+                int no_trading_sessions = stoi(GetNextChunk(my_line)); // Only need this for a sec
                 my_line = DelUpToNextItem(my_line);
-                this_date.no_trading_sessions = stoi(GetNextChunk(my_line));
-                my_line = DelUpToNextItem(my_line);
-                vector<Session> sessions;
                 int j = 0;
 
-                while(j < this_date.no_trading_sessions){
-                    Session this_session;
-                    this_session.trading_session_id = stoi(GetNextChunk(my_line));
-                    my_line = DelUpToNextItem(my_line);
-                    this_session.utc_timestamp = GetNextChunk(my_line);
-                    my_line = DelUpToNextItem(my_line);
-
+                while(j < no_trading_sessions){
                     SessionPair thispair;
-                    thispair.trading_session_id = this_session.trading_session_id;
-                    thispair.utc_timestamp = this_session.utc_timestamp;
+                    thispair.trading_session_id = stoi(GetNextChunk(my_line));
+                    my_line = DelUpToNextItem(my_line); // Chew off the trading session id
+                    thispair.utc_timestamp = GetNextChunk(my_line);
+                    my_line = DelUpToNextItem(my_line); // Chew off the utc timestamp
+
                     my_product.session_pairs.push_back(thispair);
 
                     string nextLabel = GetNextLabel(my_line);
                     if(nextLabel == "625"){
-                        this_session.trading_session_interrupt = stoi(GetNextChunk(my_line));
-                        my_line = DelUpToNextItem(my_line);
-                    }
-                    else{
-                        this_session.trading_session_interrupt = 0;
+                        my_line = DelUpToNextItem(my_line); // Get rid of the interrupt (Cause we don't care what people say)
                     }
 
-                    sessions.push_back(this_session);
                     j ++;
                 }
-                this_date.sessions = sessions;
-                dates.push_back(this_date);
                 i++;
             }
 
-            my_product.trade_dates = dates;
             prod_list[my_product.security_group] = my_product;
         }
     }
@@ -246,8 +211,7 @@ int main() {
      *      Doing this repeatedly should ensure that every day in a week is covered *BY DATE* rather than by
      *          the stamp given in the Trade Date Element
      *
-     *      Some possible optimizations - could read the file faster, now that I'm not using most of the data
-     *      Could probably save on memory by not reading in that data, two birds, one processor (and a GPU to boot)
+     *      A possible optimization - could read the file faster, now that I'm not using most of the data
      * */
 
 
