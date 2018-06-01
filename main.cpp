@@ -249,4 +249,30 @@ int main() {
      *      Some possible optimizations - could read the file faster, now that I'm not using most of the data
      *      Could probably save on memory by not reading in that data, two birds, one processor (and a GPU to boot)
      * */
+
+
+    map<string, vector<WeekdayWithString>>::iterator it2;
+
+    for(it2 = weekList.begin(); it2 != weekList.end(); it2++){
+        string key = it2->first;
+
+        cout << key << endl;
+
+        vector<WeekdayWithString> thisweek = weekList[key];
+        vector<WeekdayWithString>::iterator i3;
+
+        for(i3 = thisweek.begin(); i3 != thisweek.end(); i3++){
+            WeekdayWithString today = *i3;
+            cout << "\t" << today.datestring << endl;
+
+            vector<SessionPair>::iterator i4;
+
+            for(i4 = today.weekdaysessions.begin(); i4 != today.weekdaysessions.end(); i4++){
+                SessionPair sesh = *i4;
+                cout << "\t\t" << sesh.trading_session_id << " at " << sesh.utc_timestamp << endl;
+            }
+        }
+
+        cout << "\n" << endl;
+    }
 }
