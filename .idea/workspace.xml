@@ -13,6 +13,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e81d6642-9274-4981-89c0-8e3b55873f25" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GetWeekInfo.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GetWeekInfo.dir/main.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GetWeekInfo.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GetWeekInfo.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -29,11 +31,20 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="798">
-              <caret line="267" column="82" selection-start-line="267" selection-start-column="82" selection-end-line="267" selection-end-column="82" />
+            <state relative-caret-position="221">
+              <caret line="289" column="8" selection-start-line="289" selection-start-column="8" selection-end-line="293" selection-end-column="9" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TradingSessionListMemorialDay.dat" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionListMemorialDay.dat">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3332">
+              <caret line="196" column="14" selection-start-line="196" selection-start-column="13" selection-end-line="196" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -44,9 +55,13 @@
     <findStrings>
       <find>'</find>
       <find>#0</find>
+      <find>$M</find>
+      <find>KR</find>
+      <find>utc</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;</replace>
+      <replace>ct</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -60,10 +75,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-66" />
-    <option name="y" value="-14" />
-    <option name="width" value="1104" />
-    <option name="height" value="1106" />
+    <option name="x" value="147" />
+    <option name="y" value="-20" />
+    <option name="width" value="737" />
+    <option name="height" value="738" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -71,7 +86,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -88,6 +102,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -127,22 +142,23 @@
       <workItem from="1527858431996" duration="5082000" />
       <workItem from="1527864741532" duration="1591000" />
       <workItem from="1527869501112" duration="4978000" />
+      <workItem from="1527877481100" duration="10672000" />
+      <workItem from="1527892577208" duration="1589000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16509000" />
+    <option name="totallyTimeSpent" value="28770000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14285715" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1420765" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.8797251" />
       <window_info anchor="bottom" id="CMake" order="7" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.24742268" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.37285224" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -154,12 +170,40 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.81958765" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1343">
+          <caret line="79" column="96" selection-start-line="79" selection-start-column="96" selection-end-line="79" selection-end-column="96" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionListMemorialDay.dat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3332">
+          <caret line="196" column="14" selection-start-line="196" selection-start-column="13" selection-end-line="196" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4539">
+          <caret line="267" column="82" selection-start-line="267" selection-start-column="82" selection-end-line="267" selection-end-column="82" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2176">
@@ -190,17 +234,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionListMemorialDay.dat">
+    <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionList.dat">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="155">
-          <caret line="52" column="50" selection-start-line="52" selection-start-column="48" selection-end-line="52" selection-end-column="50" />
+          <caret line="206" column="57" lean-forward="true" selection-start-line="206" selection-start-column="57" selection-end-line="206" selection-end-column="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionListMemorialDay.dat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3332">
+          <caret line="196" column="14" selection-start-line="196" selection-start-column="13" selection-end-line="196" selection-end-column="14" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="798">
-          <caret line="267" column="82" selection-start-line="267" selection-start-column="82" selection-end-line="267" selection-end-column="82" />
+        <state relative-caret-position="221">
+          <caret line="289" column="8" selection-start-line="289" selection-start-column="8" selection-end-line="293" selection-end-column="9" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>

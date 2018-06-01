@@ -8,7 +8,7 @@
 #include <ctime>
 using namespace std;
 
-string DAYSOFWEEK [7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+string DAYSOFWEEK [6] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 map<string, string> PRODUCT_CODES = {
         {"21", "Pre-Open"},
         {"17", "Ready to Trade"},
@@ -20,7 +20,7 @@ map<string, string> PRODUCT_CODES = {
 
 // A data type that holds two things - a session and when it happens. Like a session, but less
 struct SessionPair {
-    string utc_timestamp = "";
+    string ct_timestamp = "";
     int trading_session_id = 0;
 };
 
@@ -77,7 +77,7 @@ string GetNextLabel(string line){
     }
 }
 
-// Chomps off from [0] to the index after the next SOH. So like, Del("1=abc[]2=efgh[]3=sadkf[]") = "2=efgh[]3=sadkf[]"
+// Chomps off from [0] to the index after the next SOH. So like, Del("1=abc2=efgh3=sadkf") => "2=efgh3=sadkf"
 string DelUpToNextItem(string line){
     if(line == ""){
         return nullptr;
@@ -140,7 +140,14 @@ map<string, Product> MakeProductMap(string file_name) {
                     SessionPair thispair;
                     thispair.trading_session_id = stoi(GetNextChunk(my_line));
                     my_line = DelUpToNextItem(my_line); // Chew off the trading session id
-                    thispair.utc_timestamp = GetNextChunk(my_line);
+                    string utc_timestamp = GetNextChunk(my_line); // Need to adjust the timestamp 5 hours to get it ct
+                    int hour = stoi(utc_timestamp.substr(6, 2));
+                    hour -= 5;
+                    if(hour < 0) hour += 5;
+                    string hourstring = to_string(hour);
+                    if(hourstring.length() == 1) hourstring = "0" + hourstring;
+                    thispair.ct_timestamp = utc_timestamp.substr(0, 6) + hourstring + utc_timestamp.substr(8, 10);
+
                     my_line = DelUpToNextItem(my_line); // Chew off the utc timestamp
 
                     my_product.session_pairs.push_back(thispair);
@@ -183,7 +190,7 @@ map<string, vector<WeekdayWithString>> MakeWeekList(map<string, Product> product
         // For all of the sessions, dump them into a date
         for(int i = 0; i < myseshpairlist.size(); i ++){
             SessionPair myseshpair = myseshpairlist[i];
-            string date = myseshpair.utc_timestamp.substr(0, 8);
+            string date = myseshpair.ct_timestamp.substr(0, 8);
             int mysessionid = myseshpair.trading_session_id;
             bool dumpedit = false;
 
@@ -224,51 +231,143 @@ map<string, vector<WeekdayWithString>> MakeWeekList(map<string, Product> product
     return weekList;
 }
 
+// TODO: Test the shit out of this function
+// Returns a 4-digit integer in the form HHMM. If it's 3-digit, it's HMM. If it's 0, the exchange was closed
+int CalculateOpenHours(vector<SessionPair> sessionvector){
+    int timehours = 0;
+    int timeminutes = 0;
+    int openhour = 0;
+    int openminute = 0;
+    int closehour = 0;
+    int closeminute = 0;
+    bool tradingopen = false;
 
-int main() {
-    // Set the filename
-    string filename = "C:\\Users\\Grift\\Desktop\\workStuffs\\GetWeekInfo\\dataFiles\\TradingSessionListMemorialDay.dat";
-    map<string, Product> productmap = MakeProductMap(filename);
-
-    // So now what we're going to want to do is create a week and populate each day
-
-
-    /*  Just to run through all that again for my own sanity:
-     *      I created a map from Product Descriptions to Lists of Weekdays (A 'week')
-     *      To populate each 'week', I read in every session pair, and compared it to the rest of the list
-     *      If the pair's date already existed, I would add it to that date
-     *      Otherwise, I would make a new date, and append it to the week
-     *      Doing this repeatedly should ensure that every day in a week is covered *BY DATE* rather than by
-     *          the stamp given in the Trade Date Element
-     *
-     *      A possible optimization - could read the file faster, now that I'm not using most of the data
-     * */
-
-
-    map<string, vector<WeekdayWithString>>::iterator it2;
-
-    map<string, vector<WeekdayWithString>> weekList = MakeWeekList(productmap);
-
-    for(it2 = weekList.begin(); it2 != weekList.end(); it2++){
-        string key = it2->first;
-
-        cout << key << endl;
-
-        vector<WeekdayWithString> thisweek = weekList[key];
-        vector<WeekdayWithString>::iterator i3;
-
-        for(i3 = thisweek.begin(); i3 != thisweek.end(); i3++){
-            WeekdayWithString today = *i3;
-            cout << "\t" << today.weekdayname << endl;
-
-            vector<SessionPair>::iterator i4;
-
-            for(i4 = today.weekdaysessions.begin(); i4 != today.weekdaysessions.end(); i4++){
-                SessionPair sesh = *i4;
-                cout << "\t\t" << PRODUCT_CODES[to_string(sesh.trading_session_id)] << " at " << sesh.utc_timestamp << endl;
+    vector<SessionPair>::iterator it;
+    for(it = sessionvector.begin(); it != sessionvector.end(); it++){
+        SessionPair mypair = *it;
+        if(mypair.trading_session_id == 17){
+            // If you find an open
+            openhour = stoi(mypair.ct_timestamp.substr(8, 2));
+            openminute = stoi(mypair.ct_timestamp.substr(10, 2));
+            tradingopen = true;
+        }
+        else if(mypair.trading_session_id == 4){
+            closehour = stoi(mypair.ct_timestamp.substr(8, 2));
+            closeminute = stoi(mypair.ct_timestamp.substr(10, 2));
+            // If you find a close
+            if(openhour + openminute == 0){ // If the close has no open time
+                timehours += closehour;
+                timeminutes += closeminute;
+                tradingopen = false; // just for good measure
+            }
+            else{ // The only option is that it was preceded by an open, cause you can't close twice
+                timehours += closehour - openhour;
+                timeminutes += closeminute - openminute;
+                // We do have to scrub the time to make sure it works in an HHMM format
+                if(closeminute - openminute < 0){
+                    timehours -= 1;
+                    timeminutes += 60;
+                }
+                if(timeminutes >= 60){
+                    if(timeminutes >= 120){
+                        timehours += 2;
+                        timeminutes -= 120;
+                    }
+                    else {
+                        timehours += 1;
+                        timeminutes -= 60;
+                    }
+                }
             }
         }
-
-        cout << "\n" << endl;
     }
+
+    // Only other case then - market was open and it is now midnight
+    if(tradingopen){
+        timehours += 24 - openhour - 1; // The minus one is to account for the minutes. If it's > 60, it'll give it back
+        timeminutes += 60 - openminute;
+        // Unfortunately, I have to change to things *cough* pointers? *cough* but fortunately, no negative this time
+        //And it can't be 120, so that's nice
+        if(timeminutes >= 60){
+            timehours += 1;
+            timeminutes -= 60;
+        }
+    }
+
+    int time = timehours * 100 + timeminutes;
+    return time;
+}
+
+
+// Gets the day of the week. Weekday Name enumeration: Monday, Tuesday, etc.
+vector<SessionPair> GetDayFromList(string WeekdayName, vector<WeekdayWithString> week){
+    WeekdayWithString theday;
+
+    vector<WeekdayWithString>::iterator it;
+
+    for(it = week.begin(); it != week.end(); it ++){
+        WeekdayWithString today = *it;
+        if(today.weekdayname == WeekdayName){
+            theday = today;
+        }
+    }
+
+    return theday.weekdaysessions;
+}
+
+
+int main() {
+    // Set the filenames
+    string baselinefilename =
+            "C:\\Users\\Grift\\Desktop\\workStuffs\\GetWeekInfo\\dataFiles\\TradingSessionList.dat";
+    string specialfilename =
+            "C:\\Users\\Grift\\Desktop\\workStuffs\\GetWeekInfo\\dataFiles\\TradingSessionListMemorialDay.dat";
+
+    map<string, Product> baselineproductmap = MakeProductMap(baselinefilename);
+    map<string, vector<WeekdayWithString>> baselineweeklist = MakeWeekList(baselineproductmap);
+
+    cout << "Read in the baseline!" << endl;
+
+    map<string, Product> specialproductmap = MakeProductMap(specialfilename);
+    map<string, vector<WeekdayWithString>> specialweeklist = MakeWeekList(specialproductmap);
+
+    cout << "Read in the special schedule!" << endl;
+
+    // Okay, so now let's do some comparison
+    map<string, vector<WeekdayWithString>>::iterator it;
+
+    // For each product
+    for(it = baselineweeklist.begin(); it != baselineweeklist.end(); it++){
+        string key = it->first;
+        // If both the symbols exist
+        if(baselineweeklist.find(key) != baselineweeklist.end() && specialweeklist.find(key) != specialweeklist.end()){
+            vector<WeekdayWithString> baselineweekprod = baselineweeklist[key];
+            vector<WeekdayWithString> specialweekprod = specialweeklist[key];
+
+            for (const string &day : DAYSOFWEEK) {
+                vector<SessionPair> baselineweekday = GetDayFromList(day, baselineweekprod);
+                vector<SessionPair> holidayweekday = GetDayFromList(day, specialweekprod);
+
+                if(baselineweekday.empty() || holidayweekday.empty()){
+                    cout << "The product " << key << " had " << day << " off." << endl;
+                }
+                else{
+                    int baselinehours = CalculateOpenHours(baselineweekday);
+                    int holidayhours = CalculateOpenHours(holidayweekday);
+
+                    if(baselinehours != holidayhours){
+                        if(holidayhours == 0){
+                            cout << "The product " << key << " either never opened or never closed on " << day << endl;
+                        }
+                        else{
+                            cout << "The product " << key << " traded for " << to_string(holidayhours)
+                                 << " when it normally trades for " << to_string(baselinehours) << " hours." << endl;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }
