@@ -5,8 +5,18 @@
 #include <map>
 #include <tuple>
 #include <algorithm>
+#include <ctime>
 using namespace std;
 
+string DAYSOFWEEK [7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+map<string, string> PRODUCT_CODES = {
+        {"21", "Pre-Open"},
+        {"17", "Ready to Trade"},
+        {"2", "Trading Halt"},
+        {"18", "Not available for trading"},
+        {"4", "Close"},
+        {"26", "Post Close"}
+};
 
 // A data type that holds two things - a session and when it happens. Like a session, but less
 struct SessionPair {
@@ -22,7 +32,7 @@ struct Product {
 };
 
 struct WeekdayWithString {
-    string datestring = "";
+    string weekdayname = "";
     vector<SessionPair> weekdaysessions;
 };
 
@@ -156,12 +166,7 @@ map<string, Product> MakeProductMap(string file_name) {
 }
 
 
-int main() {
-    // Set the filename
-    string filename = "C:\\Users\\Grift\\Desktop\\workStuffs\\GetWeekInfo\\dataFiles\\TradingSessionListMemorialDay.dat";
-    map<string, Product> productmap = MakeProductMap(filename);
-
-    // So now what we're going to want to do is create a week and populate each day
+map<string, vector<WeekdayWithString>> MakeWeekList(map<string, Product> productmap){
     map<string, vector<WeekdayWithString>> weekList;
 
     map<string, Product>::iterator it;
@@ -182,19 +187,32 @@ int main() {
             int mysessionid = myseshpair.trading_session_id;
             bool dumpedit = false;
 
+            tm timeStruct = {};
+            timeStruct.tm_year = stoi(date.substr(0, 4)) - 1900;
+            timeStruct.tm_mon = stoi(date.substr(4, 2)) - 1;
+            timeStruct.tm_mday = stoi(date.substr(6, 2));
+            timeStruct.tm_hour = 12;    //  To avoid any doubts about summer time, etc.
+
+            mktime( &timeStruct );
+
+            int dayofweeknum = timeStruct.tm_wday;  //  0...6 for Sunday...Saturday
+
+            string thisdayofweek = DAYSOFWEEK[dayofweeknum];
+
             // For all of the days that already exist, see if that session can go in there
             // Minor optimization, really only need to check the last day, I'm pretty sure. I could be wrong
             // and I can't think rn, so I'm going to do every day
             for (int j = 0; j < thisproductweek.size(); j++) {
-                if(thisproductweek[j].datestring == date){
+                if(thisproductweek[j].weekdayname == thisdayofweek){
                     dumpedit = true;
                     thisproductweek[j].weekdaysessions.push_back(myseshpair);
                 }
             }
+
             if(!dumpedit){
                 // Then you gotta make a new day!
                 WeekdayWithString newday;
-                newday.datestring = date;
+                newday.weekdayname = thisdayofweek;
                 newday.weekdaysessions.push_back(myseshpair);
                 thisproductweek.push_back(newday);
             }
@@ -202,6 +220,18 @@ int main() {
 
         weekList[key] = thisproductweek;
     }
+
+    return weekList;
+}
+
+
+int main() {
+    // Set the filename
+    string filename = "C:\\Users\\Grift\\Desktop\\workStuffs\\GetWeekInfo\\dataFiles\\TradingSessionListMemorialDay.dat";
+    map<string, Product> productmap = MakeProductMap(filename);
+
+    // So now what we're going to want to do is create a week and populate each day
+
 
     /*  Just to run through all that again for my own sanity:
      *      I created a map from Product Descriptions to Lists of Weekdays (A 'week')
@@ -217,6 +247,8 @@ int main() {
 
     map<string, vector<WeekdayWithString>>::iterator it2;
 
+    map<string, vector<WeekdayWithString>> weekList = MakeWeekList(productmap);
+
     for(it2 = weekList.begin(); it2 != weekList.end(); it2++){
         string key = it2->first;
 
@@ -227,13 +259,13 @@ int main() {
 
         for(i3 = thisweek.begin(); i3 != thisweek.end(); i3++){
             WeekdayWithString today = *i3;
-            cout << "\t" << today.datestring << endl;
+            cout << "\t" << today.weekdayname << endl;
 
             vector<SessionPair>::iterator i4;
 
             for(i4 = today.weekdaysessions.begin(); i4 != today.weekdaysessions.end(); i4++){
                 SessionPair sesh = *i4;
-                cout << "\t\t" << sesh.trading_session_id << " at " << sesh.utc_timestamp << endl;
+                cout << "\t\t" << PRODUCT_CODES[to_string(sesh.trading_session_id)] << " at " << sesh.utc_timestamp << endl;
             }
         }
 
