@@ -245,22 +245,23 @@ int CalculateOpenHours(vector<SessionPair> sessionvector){
     vector<SessionPair>::iterator it;
     for(it = sessionvector.begin(); it != sessionvector.end(); it++){
         SessionPair mypair = *it;
+
         if(mypair.trading_session_id == 17){
             // If you find an open
             openhour = stoi(mypair.ct_timestamp.substr(8, 2));
             openminute = stoi(mypair.ct_timestamp.substr(10, 2));
             tradingopen = true;
         }
-        else if(mypair.trading_session_id == 4){
+        else if(mypair.trading_session_id != 17 && tradingopen){ // Literally any other label stops trading
+            // However, some products close while it's in the pre-open phase
             closehour = stoi(mypair.ct_timestamp.substr(8, 2));
             closeminute = stoi(mypair.ct_timestamp.substr(10, 2));
             // If you find a close
-            if(openhour + openminute == 0){ // If the close has no open time
+            if(openhour + openminute == 0){
                 timehours += closehour;
                 timeminutes += closeminute;
-                tradingopen = false; // just for good measure
             }
-            else{ // The only option is that it was preceded by an open, cause you can't close twice
+            else{ // The only other option is that we opened earlier today, so do that
                 timehours += closehour - openhour;
                 timeminutes += closeminute - openminute;
                 // We do have to scrub the time to make sure it works in an HHMM format
@@ -279,6 +280,9 @@ int CalculateOpenHours(vector<SessionPair> sessionvector){
                     }
                 }
             }
+
+            // And in either case, trading has closed, so
+            tradingopen = false;
         }
     }
 
@@ -333,7 +337,7 @@ int main() {
 
     cout << "Read in the special schedule!" << endl;
 
-    /*
+
     // Okay, so now let's do some comparison
     map<string, vector<WeekdayWithString>>::iterator it;
 
@@ -349,29 +353,26 @@ int main() {
                 vector<SessionPair> baselineweekday = GetDayFromList(day, baselineweekprod);
                 vector<SessionPair> holidayweekday = GetDayFromList(day, specialweekprod);
 
-                if(baselineweekday.empty() || holidayweekday.empty()){
+                int baselinehours = CalculateOpenHours(baselineweekday);
+                int holidayhours = CalculateOpenHours(holidayweekday);
+
+                if(holidayhours > 0 && baselinehours == 0){
                     cout << "The product " << key << " had " << day << " off." << endl;
                 }
                 else{
-                    int baselinehours = CalculateOpenHours(baselineweekday);
-                    int holidayhours = CalculateOpenHours(holidayweekday);
-
                     if(baselinehours != holidayhours){
                         if(holidayhours == 0){
-                            cout << "The product " << key << " either never opened or never closed on " << day << endl;
+                            cout << "The product " << key << " did not trade on " << day << endl;
                         }
                         else{
                             cout << "The product " << key << " traded for " << to_string(holidayhours)
-                                 << " when it normally trades for " << to_string(baselinehours) << " hours." << endl;
+                                 << " when it normally trades for " << to_string(baselinehours) << " hours on "
+                                 << day << endl;
                         }
                     }
                 }
             }
         }
     }
-     */
-
-    // That'll be reinstated when my CalculateOpenHours function is tested.
-
 
 }
