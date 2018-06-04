@@ -161,7 +161,13 @@ map<string, Product> MakeProductMap(string file_name) {
                 }
                 i++;
             }
-
+            // Now gotta sort the timestamps
+            // This works because every date will be bigger than the next one, alphabetically
+            // Huh. Well played, CME
+            sort( my_product.session_pairs.begin( ), my_product.session_pairs.end( ),
+                  []( const SessionPair& a, const SessionPair&b ){
+                      return a.ct_timestamp < b.ct_timestamp;
+                  } );
             prod_list[my_product.security_group] = my_product;
         }
     }
@@ -231,7 +237,7 @@ map<string, vector<WeekdayWithString>> MakeWeekList(map<string, Product> product
     return weekList;
 }
 
-// TODO: Test the shit out of this function
+
 // Returns a 4-digit integer in the form HHMM. If it's 3-digit, it's HMM. If it's 0, the exchange was closed
 int CalculateOpenHours(vector<SessionPair> sessionvector){
     int timehours = 0;
@@ -290,7 +296,7 @@ int CalculateOpenHours(vector<SessionPair> sessionvector){
     if(tradingopen){
         timehours += 24 - openhour - 1; // The minus one is to account for the minutes. If it's > 60, it'll give it back
         timeminutes += 60 - openminute;
-        // Unfortunately, I have to change to things *cough* pointers? *cough* but fortunately, no negative this time
+        // Unfortunately, I have to change two things *cough* pointers? *cough* but fortunately, no negative this time
         //And it can't be 120, so that's nice
         if(timeminutes >= 60){
             timehours += 1;
@@ -363,6 +369,9 @@ int main() {
                     if(baselinehours != holidayhours){
                         if(holidayhours == 0){
                             cout << "The product " << key << " did not trade on " << day << endl;
+                            cout << baselinehours << endl;
+                            cout << holidayhours << endl;
+                            cout << "--------------" << endl;
                         }
                         else{
                             cout << "The product " << key << " traded for " << to_string(holidayhours)
