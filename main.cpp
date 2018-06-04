@@ -141,12 +141,12 @@ map<string, Product> MakeProductMap(string file_name) {
                     thispair.trading_session_id = stoi(GetNextChunk(my_line));
                     my_line = DelUpToNextItem(my_line); // Chew off the trading session id
                     string utc_timestamp = GetNextChunk(my_line); // Need to adjust the timestamp 5 hours to get it ct
-                    int hour = stoi(utc_timestamp.substr(6, 2));
+                    int hour = stoi(utc_timestamp.substr(8, 2));
                     hour -= 5;
                     if(hour < 0) hour += 5;
                     string hourstring = to_string(hour);
                     if(hourstring.length() == 1) hourstring = "0" + hourstring;
-                    thispair.ct_timestamp = utc_timestamp.substr(0, 6) + hourstring + utc_timestamp.substr(8, 10);
+                    thispair.ct_timestamp = utc_timestamp.substr(0, 8) + hourstring + utc_timestamp.substr(10, 10);
 
                     my_line = DelUpToNextItem(my_line); // Chew off the utc timestamp
 
@@ -173,6 +173,7 @@ map<string, Product> MakeProductMap(string file_name) {
 }
 
 
+// Makes a vector of Weekdays from a Product list
 map<string, vector<WeekdayWithString>> MakeWeekList(map<string, Product> productmap){
     map<string, vector<WeekdayWithString>> weekList;
 
@@ -194,15 +195,14 @@ map<string, vector<WeekdayWithString>> MakeWeekList(map<string, Product> product
             int mysessionid = myseshpair.trading_session_id;
             bool dumpedit = false;
 
-            tm timeStruct = {};
-            timeStruct.tm_year = stoi(date.substr(0, 4)) - 1900;
-            timeStruct.tm_mon = stoi(date.substr(4, 2)) - 1;
-            timeStruct.tm_mday = stoi(date.substr(6, 2));
-            timeStruct.tm_hour = 12;    //  To avoid any doubts about summer time, etc.
+            tm timestruct = {};
+            timestruct.tm_year = stoi(date.substr(0, 4)) - 1900;
+            timestruct.tm_mon = stoi(date.substr(4, 2)) - 1;
+            timestruct.tm_mday = stoi(date.substr(6, 2));
+            timestruct.tm_hour = 12;    //  To avoid any doubts about summer time, etc.
+            mktime( &timestruct );
 
-            mktime( &timeStruct );
-
-            int dayofweeknum = timeStruct.tm_wday;  //  0...6 for Sunday...Saturday
+            int dayofweeknum = timestruct.tm_wday;  //  0...5 for Sunday...Friday. There shouldn't be a Saturday.
 
             string thisdayofweek = DAYSOFWEEK[dayofweeknum];
 
@@ -333,6 +333,7 @@ int main() {
 
     cout << "Read in the special schedule!" << endl;
 
+    /*
     // Okay, so now let's do some comparison
     map<string, vector<WeekdayWithString>>::iterator it;
 
@@ -368,6 +369,9 @@ int main() {
             }
         }
     }
+     */
+
+    // That'll be reinstated when my CalculateOpenHours function is tested.
 
 
 }
