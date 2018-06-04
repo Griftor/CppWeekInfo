@@ -25,19 +25,27 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="382">
-              <caret line="163" column="44" selection-start-line="163" selection-start-column="44" selection-end-line="163" selection-end-column="44" />
+            <state relative-caret-position="310">
+              <caret line="370" column="97" selection-start-line="370" selection-start-column="97" selection-end-line="370" selection-end-column="97" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#2876#3150#0" />
                 <element signature="e#6041#8273#0" />
                 <element signature="e#8356#11059#0" />
                 <element signature="e#10904#11364#0" />
-                <element signature="e#11447#13969#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TradingSessionList.dat" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionList.dat">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="199">
+              <caret line="203" column="48" selection-start-line="203" selection-start-column="46" selection-end-line="203" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -47,7 +55,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>'</find>
-      <find>KR</find>
       <find>utc</find>
       <find>timeStruct</find>
       <find>20180515</find>
@@ -55,8 +62,10 @@
       <find>#0</find>
       <find>0H</find>
       <find>1G</find>
-      <find />
-      <find />
+      <find>Lean Hog</find>
+      <find>Lean hog outs</find>
+      <find>1V</find>
+      <find>KR</find>
     </findStrings>
     <replaceStrings>
       <replace>&quot;</replace>
@@ -145,24 +154,23 @@
       <workItem from="1527869501112" duration="4978000" />
       <workItem from="1527877481100" duration="10672000" />
       <workItem from="1527892577208" duration="1589000" />
-      <workItem from="1528118620577" duration="11664000" />
+      <workItem from="1528118620577" duration="13415000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40434000" />
+    <option name="totallyTimeSpent" value="42185000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.5689655" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.30169493" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.2858757" />
       <window_info anchor="bottom" id="CMake" order="7" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.24519774" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.26666668" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -190,7 +198,6 @@
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
         </state>
       </provider>
@@ -212,7 +219,6 @@
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
         </state>
       </provider>
@@ -234,7 +240,6 @@
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
         </state>
       </provider>
@@ -249,7 +254,6 @@
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
         </state>
       </provider>
@@ -264,7 +268,6 @@
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
         </state>
       </provider>
@@ -279,7 +282,6 @@
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
         </state>
       </provider>
@@ -294,25 +296,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionList.dat">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="305" column="49" lean-forward="true" selection-start-line="305" selection-end-line="306" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="163" column="44" selection-start-line="163" selection-start-column="44" selection-end-line="163" selection-end-column="44" />
+        <state relative-caret-position="310">
+          <caret line="370" column="97" selection-start-line="370" selection-start-column="97" selection-end-line="370" selection-end-column="97" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#2876#3150#0" />
             <element signature="e#6041#8273#0" />
             <element signature="e#8356#11059#0" />
             <element signature="e#10904#11364#0" />
-            <element signature="e#11447#13969#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataFiles/TradingSessionList.dat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="203" column="48" selection-start-line="203" selection-start-column="46" selection-end-line="203" selection-end-column="48" />
         </state>
       </provider>
     </entry>

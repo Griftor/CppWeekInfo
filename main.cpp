@@ -369,9 +369,6 @@ int main() {
                     if(baselinehours != holidayhours){
                         if(holidayhours == 0){
                             cout << "The product " << key << " did not trade on " << day << endl;
-                            cout << baselinehours << endl;
-                            cout << holidayhours << endl;
-                            cout << "--------------" << endl;
                         }
                         else{
                             cout << "The product " << key << " traded for " << to_string(holidayhours)
